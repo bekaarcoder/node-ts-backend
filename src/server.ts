@@ -1,5 +1,6 @@
-import { Application } from 'express';
+import express, { Application } from 'express';
 import 'dotenv/config';
+import appRoutes from './globals/routes/appRoutes';
 
 class Server {
     private app: Application;
@@ -8,7 +9,23 @@ class Server {
         this.app = app;
     }
 
-    public startServer() {
+    public start(): void {
+        this.setupMiddleware();
+        this.setupRoutes();
+        this.setupGlobalError();
+        this.startServer();
+    }
+
+    private setupMiddleware(): void {
+        this.app.use(express.json());
+    }
+
+    private setupRoutes(): void {
+        appRoutes(this.app);
+    }
+    private setupGlobalError(): void {}
+
+    private startServer() {
         const port = parseInt(process.env.PORT!) || 5000;
 
         this.app.listen(port, () => {
