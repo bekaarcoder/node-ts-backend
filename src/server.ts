@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import 'dotenv/config';
 import appRoutes from './globals/routes/appRoutes';
+import { HTTP_STATUS } from './globals/constants/http';
 
 class Server {
     private app: Application;
@@ -26,7 +27,7 @@ class Server {
 
     private setupGlobalError(): void {
         this.app.all('*', (req, res, next) => {
-            res.status(404).json({
+            res.status(HTTP_STATUS.NOT_FOUND).json({
                 message: `URL ${req.originalUrl} not found`,
             });
         });

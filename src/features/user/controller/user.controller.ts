@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { HTTP_STATUS } from '~/globals/constants/http';
 import { prisma } from '~/prisma';
 
 class UserController {
@@ -16,7 +17,7 @@ class UserController {
             },
         });
 
-        res.status(201).json(newUser);
+        res.status(HTTP_STATUS.CREATED).json(newUser);
     }
 }
 
