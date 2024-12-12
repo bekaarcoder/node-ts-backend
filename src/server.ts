@@ -2,7 +2,10 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import 'dotenv/config';
 import appRoutes from './globals/routes/appRoutes';
 import { HTTP_STATUS } from './globals/constants/http';
-import { CustomError } from './globals/middleware/error.middleware';
+import {
+    CustomError,
+    NotFoundException,
+} from './globals/middleware/error.middleware';
 
 class Server {
     private app: Application;
@@ -29,9 +32,9 @@ class Server {
     private setupGlobalError(): void {
         // Not Found Error
         this.app.all('*', (req, res, next) => {
-            res.status(HTTP_STATUS.NOT_FOUND).json({
-                message: `URL ${req.originalUrl} not found`,
-            });
+            return next(
+                new NotFoundException(`Url ${req.originalUrl} not found`)
+            );
         });
 
         // Global Error
