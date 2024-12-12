@@ -23,7 +23,14 @@ class Server {
     private setupRoutes(): void {
         appRoutes(this.app);
     }
-    private setupGlobalError(): void {}
+
+    private setupGlobalError(): void {
+        this.app.all('*', (req, res, next) => {
+            res.status(404).json({
+                message: `URL ${req.originalUrl} not found`,
+            });
+        });
+    }
 
     private startServer() {
         const port = parseInt(process.env.PORT!) || 5000;
