@@ -113,6 +113,6 @@
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   },
-  // "files": ["src/type.d.ts"],
+  "files": ["src/type.d.ts"],
   "include": ["src/**/*"]
 }

@@ -66,7 +66,7 @@ class AuthService {
         return accessToken;
     }
 
-    private async getUserByEmail(email: string) {
+    public async getUserByEmail(email: string) {
         return await prisma.user.findFirst({
             where: {
                 email: email,

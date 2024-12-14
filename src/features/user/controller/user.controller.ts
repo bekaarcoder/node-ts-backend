@@ -19,6 +19,11 @@ class UserController {
 
         res.status(HTTP_STATUS.CREATED).json(newUser);
     }
+
+    public async getMe(req: Request, res: Response, next: NextFunction) {
+        console.log(req.currentUser);
+        res.status(200).json(req.currentUser);
+    }
 }
 
 export const userController: UserController = new UserController();
