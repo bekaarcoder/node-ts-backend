@@ -35,10 +35,24 @@ model User {
 }
 
 model Category {
-  id     Int     @id @default(autoincrement())
-  name   String
-  icon   String
-  status Boolean @default(true)
+  id       Int       @id @default(autoincrement())
+  name     String
+  icon     String
+  status   Boolean   @default(true)
+  products Product[]
 
   @@map("categories")
+}
+
+model Product {
+  id               Int      @id @default(autoincrement())
+  name             String
+  longDescription  String   @db.LongText
+  shortDescription String
+  quantity         Int
+  mainImage        String
+  category         Category @relation(fields: [categoryId], references: [id])
+  categoryId       Int
+
+  @@map("products")
 }

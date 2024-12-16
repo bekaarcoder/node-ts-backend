@@ -4,6 +4,7 @@ import appRoutes from './globals/routes/appRoutes';
 import { HTTP_STATUS } from './globals/constants/http';
 import {
     CustomError,
+    InternalServerException,
     NotFoundException,
 } from './globals/middleware/error.middleware';
 
@@ -43,6 +44,12 @@ class Server {
                 if (error instanceof CustomError) {
                     res.status(error.statusCode).json(error.getErrorResponse());
                     return;
+                } else {
+                    console.log(error);
+                    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json({
+                        message: 'Something went wrong',
+                        error: error.message,
+                    });
                 }
                 next();
             }
