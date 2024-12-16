@@ -1,5 +1,6 @@
 import { Product } from '@prisma/client';
 import { IProductBody } from '~/features/product/interface/product.interface';
+import { Utils } from '~/globals/constants/utils';
 import { NotFoundException } from '~/globals/middleware/error.middleware';
 import { prisma } from '~/prisma';
 
@@ -25,6 +26,26 @@ class ProductService {
             },
         });
         return product;
+    }
+
+    public async getWithPagination(
+        page: number = Utils.DEFAULT_PAGE,
+        pageSize: number = Utils.DEFAULT_PAGE_SIZE,
+        sortBy: string = Utils.DEFAULT_SORT_BY,
+        sortDir: string = Utils.DEFAULT_SORT_DIR
+    ) {
+        const skip = (page - 1) * pageSize;
+        const take = pageSize;
+
+        const products: Product[] = await prisma.product.findMany({
+            skip,
+            take,
+            orderBy: {
+                [sortBy]: sortDir,
+            },
+        });
+
+        return products;
     }
 
     public async getAllProducts() {

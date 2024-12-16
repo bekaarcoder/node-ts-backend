@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { HTTP_STATUS } from '~/globals/constants/http';
+import { Utils } from '~/globals/constants/utils';
 import { productService } from '~/services/db/product.service';
 
 class ProductController {
@@ -10,7 +11,21 @@ class ProductController {
     }
 
     public async read(req: Request, res: Response) {
-        const products = await productService.getAllProducts();
+        // const products = await productService.getAllProducts();
+        const page = parseInt(req.query.page as string) || Utils.DEFAULT_PAGE;
+        const pageSize =
+            parseInt(req.query.pageSize as string) || Utils.DEFAULT_PAGE_SIZE;
+        const sortBy = (req.query.sortBy as string) || Utils.DEFAULT_SORT_BY;
+        const sortDir = (req.query.sortDir as string) || Utils.DEFAULT_SORT_DIR;
+
+        console.log(page, pageSize, sortBy, sortDir);
+
+        const products = await productService.getWithPagination(
+            page,
+            pageSize,
+            sortBy,
+            sortDir
+        );
 
         res.status(HTTP_STATUS.OK).json(products);
     }
