@@ -49,6 +49,7 @@ model Product {
   name             String
   longDescription  String   @db.LongText
   shortDescription String
+  price            Float    @default(0)
   quantity         Int
   mainImage        String
   category         Category @relation(fields: [categoryId], references: [id])

@@ -32,7 +32,8 @@ class ProductService {
         page: number = Utils.DEFAULT_PAGE,
         pageSize: number = Utils.DEFAULT_PAGE_SIZE,
         sortBy: string = Utils.DEFAULT_SORT_BY,
-        sortDir: string = Utils.DEFAULT_SORT_DIR
+        sortDir: string = Utils.DEFAULT_SORT_DIR,
+        filterObj: any = {}
     ) {
         const skip = (page - 1) * pageSize;
         const take = pageSize;
@@ -40,6 +41,7 @@ class ProductService {
         const products: Product[] = await prisma.product.findMany({
             skip,
             take,
+            where: filterObj,
             orderBy: {
                 [sortBy]: sortDir,
             },
