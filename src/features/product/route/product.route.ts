@@ -7,14 +7,16 @@ import {
     isShop,
     verifyUser,
 } from '~/globals/middleware/auth.middleware';
+import { upload } from '~/globals/helpers/Upload';
 
 const productRoute = express.Router();
 
 productRoute.post(
     '/',
-    validateSchema(createProductSchema),
     verifyUser,
     authorizeRoles('SHOP', 'ADMIN'),
+    upload.single('mainImage'),
+    validateSchema(createProductSchema),
     productController.create
 );
 
@@ -24,9 +26,10 @@ productRoute.get('/:id', productController.readSingle);
 
 productRoute.put(
     '/:id',
-    validateSchema(createProductSchema),
     verifyUser,
     authorizeRoles('SHOP', 'ADMIN'),
+    upload.single('mainImage'),
+    validateSchema(createProductSchema),
     productController.update
 );
 

@@ -1,4 +1,5 @@
 import { Product } from '@prisma/client';
+import { Express } from 'express';
 import { IProductBody } from '~/features/product/interface/product.interface';
 import { Utils } from '~/globals/constants/utils';
 import { Helper } from '~/globals/helpers/Helper';
@@ -9,13 +10,17 @@ import {
 import { prisma } from '~/prisma';
 
 class ProductService {
-    public async addProduct(requestBody: IProductBody, userId: number) {
+    public async addProduct(
+        requestBody: IProductBody,
+        userId: number,
+        file: Express.Multer.File | undefined
+    ) {
         const {
             name,
             shortDescription,
             longDescription,
             quantity,
-            mainImage,
+            price,
             categoryId,
         } = requestBody;
 
@@ -24,9 +29,10 @@ class ProductService {
                 name,
                 shortDescription,
                 longDescription,
-                quantity,
-                mainImage,
-                categoryId,
+                quantity: parseInt(quantity),
+                price: parseFloat(price),
+                mainImage: file?.filename ? file.filename : '',
+                categoryId: parseInt(categoryId),
                 shopId: userId,
             },
         });
@@ -78,7 +84,8 @@ class ProductService {
     public async updateProduct(
         id: number,
         user: IUserPayload,
-        requestBody: IProductBody
+        requestBody: IProductBody,
+        file: Express.Multer.File | undefined
     ) {
         const product = await this.getById(id);
 
@@ -89,7 +96,7 @@ class ProductService {
             shortDescription,
             longDescription,
             quantity,
-            mainImage,
+            price,
             categoryId,
         } = requestBody;
         const updatedProduct = await prisma.product.update({
@@ -100,9 +107,10 @@ class ProductService {
                 name,
                 shortDescription,
                 longDescription,
-                quantity,
-                mainImage,
-                categoryId,
+                quantity: parseInt(quantity),
+                price: parseFloat(price),
+                mainImage: file?.filename ? file.filename : product.mainImage,
+                categoryId: parseInt(categoryId),
                 shopId: user.id,
             },
         });

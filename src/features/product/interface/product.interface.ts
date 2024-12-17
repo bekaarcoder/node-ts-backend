@@ -2,8 +2,9 @@ export interface IProductBody {
     name: string;
     longDescription: string;
     shortDescription: string;
-    quantity: number;
+    quantity: string;
+    price: string;
     mainImage: string;
-    categoryId: number;
-    shopId: number;
+    categoryId: string;
+    shopId: string;
 }

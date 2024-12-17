@@ -5,10 +5,11 @@ import { productService } from '~/services/db/product.service';
 
 class ProductController {
     public async create(req: Request, res: Response) {
-        console.log('Current User: ', req.currentUser);
+        console.log(req.file);
         const product = await productService.addProduct(
             req.body,
-            req.currentUser.id
+            req.currentUser.id,
+            req.file
         );
 
         res.status(HTTP_STATUS.CREATED).json(product);
@@ -66,7 +67,8 @@ class ProductController {
         const product = await productService.updateProduct(
             id,
             req.currentUser,
-            req.body
+            req.body,
+            req.file
         );
 
         res.status(HTTP_STATUS.OK).json(product);

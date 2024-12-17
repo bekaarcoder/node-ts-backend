@@ -10,6 +10,7 @@ const formatJoiMessage = (joiMessages: ValidationErrorItem[]) => {
 
 export const validateSchema = (schema: Schema) => {
     return (req: Request, res: Response, next: NextFunction) => {
+        console.log(req.body);
         const { error } = schema.validate(req.body, { abortEarly: false });
 
         if (error) {
