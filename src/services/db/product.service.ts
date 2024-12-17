@@ -128,6 +128,21 @@ class ProductService {
             },
         });
     }
+
+    public async getMyProducts(currentUser: IUserPayload) {
+        const userProducts = await prisma.user.findFirst({
+            where: {
+                id: currentUser.id,
+            },
+            include: {
+                products: true,
+            },
+            omit: {
+                password: true,
+            },
+        });
+        return userProducts;
+    }
 }
 
 export const productService: ProductService = new ProductService();

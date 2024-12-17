@@ -22,6 +22,8 @@ productRoute.post(
 
 productRoute.get('/', productController.read);
 
+productRoute.get('/vendor', verifyUser, productController.getAllUserProducts);
+
 productRoute.get('/:id', productController.readSingle);
 
 productRoute.put(

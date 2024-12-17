@@ -82,6 +82,14 @@ class ProductController {
             message: `Product with id ${id} deleted successfully`,
         });
     }
+
+    public async getAllUserProducts(req: Request, res: Response) {
+        const userProducts = await productService.getMyProducts(
+            req.currentUser
+        );
+
+        res.status(HTTP_STATUS.OK).json(userProducts);
+    }
 }
 
 export const productController: ProductController = new ProductController();
