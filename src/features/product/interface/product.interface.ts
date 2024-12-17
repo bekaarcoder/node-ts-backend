@@ -5,4 +5,5 @@ export interface IProductBody {
     quantity: number;
     mainImage: string;
     categoryId: number;
+    shopId: number;
 }

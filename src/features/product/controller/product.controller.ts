@@ -5,7 +5,11 @@ import { productService } from '~/services/db/product.service';
 
 class ProductController {
     public async create(req: Request, res: Response) {
-        const product = await productService.addProduct(req.body);
+        console.log('Current User: ', req.currentUser);
+        const product = await productService.addProduct(
+            req.body,
+            req.currentUser.id
+        );
 
         res.status(HTTP_STATUS.CREATED).json(product);
     }
@@ -59,14 +63,18 @@ class ProductController {
 
     public async update(req: Request, res: Response) {
         const id = parseInt(req.params.id);
-        const product = await productService.updateProduct(id, req.body);
+        const product = await productService.updateProduct(
+            id,
+            req.currentUser,
+            req.body
+        );
 
         res.status(HTTP_STATUS.OK).json(product);
     }
 
     public async delete(req: Request, res: Response) {
         const id = parseInt(req.params.id);
-        await productService.deleteProduct(id);
+        await productService.deleteProduct(id, req.currentUser);
 
         res.status(HTTP_STATUS.OK).json({
             message: `Product with id ${id} deleted successfully`,

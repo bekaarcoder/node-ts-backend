@@ -39,3 +39,29 @@ export const isAdmin = async (
         throw new ForbiddenException('Forbidden request');
     }
 };
+
+export const isShop = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const user = await authService.getUserByEmail(req.currentUser.email);
+        if (!user || user.role !== 'SHOP') {
+            throw new ForbiddenException('Forbidden request');
+        }
+        next();
+    } catch (error) {
+        throw new ForbiddenException('Forbidden request');
+    }
+};
+
+export function authorizeRoles(...roles: string[]) {
+    return (req: Request, res: Response, next: NextFunction) => {
+        if (!roles.includes(req.currentUser.role)) {
+            throw new ForbiddenException('Forbidden request');
+        }
+
+        next();
+    };
+}

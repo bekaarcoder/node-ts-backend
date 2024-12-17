@@ -1,11 +1,15 @@
 import { Product } from '@prisma/client';
 import { IProductBody } from '~/features/product/interface/product.interface';
 import { Utils } from '~/globals/constants/utils';
-import { NotFoundException } from '~/globals/middleware/error.middleware';
+import { Helper } from '~/globals/helpers/Helper';
+import {
+    ForbiddenException,
+    NotFoundException,
+} from '~/globals/middleware/error.middleware';
 import { prisma } from '~/prisma';
 
 class ProductService {
-    public async addProduct(requestBody: IProductBody) {
+    public async addProduct(requestBody: IProductBody, userId: number) {
         const {
             name,
             shortDescription,
@@ -23,6 +27,7 @@ class ProductService {
                 quantity,
                 mainImage,
                 categoryId,
+                shopId: userId,
             },
         });
         return product;
@@ -70,8 +75,14 @@ class ProductService {
         return product;
     }
 
-    public async updateProduct(id: number, requestBody: IProductBody) {
+    public async updateProduct(
+        id: number,
+        user: IUserPayload,
+        requestBody: IProductBody
+    ) {
         const product = await this.getById(id);
+
+        Helper.checkPermissionForProduct(product, user);
 
         const {
             name,
@@ -92,13 +103,16 @@ class ProductService {
                 quantity,
                 mainImage,
                 categoryId,
+                shopId: user.id,
             },
         });
         return updatedProduct;
     }
 
-    public async deleteProduct(id: number) {
+    public async deleteProduct(id: number, user: IUserPayload) {
         const product = await this.getById(id);
+
+        Helper.checkPermissionForProduct(product, user);
 
         await prisma.product.delete({
             where: {

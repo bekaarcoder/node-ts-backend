@@ -26,6 +26,7 @@ class AuthService {
 
         // Create JWT
         const payload = {
+            id: newUser.id,
             email,
             firstName,
             lastName,
@@ -55,6 +56,7 @@ class AuthService {
         }
 
         const payload = {
+            id: user.id,
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
