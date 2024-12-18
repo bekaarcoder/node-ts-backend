@@ -61,8 +61,18 @@ model Product {
   shop   User? @relation(fields: [shopId], references: [id])
   shopId Int?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @default(now()) @updatedAt
+  productImages ProductImages[]
 
   @@map("products")
+}
+
+model ProductImages {
+  id        Int     @id @default(autoincrement())
+  image     String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+
+  @@map("product_images")
 }
