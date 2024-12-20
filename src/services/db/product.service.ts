@@ -72,6 +72,14 @@ class ProductService {
             where: {
                 id,
             },
+            include: {
+                productImages: true,
+                productVariants: {
+                    include: {
+                        productVariantItems: true,
+                    },
+                },
+            },
         });
 
         if (!product) {
