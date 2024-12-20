@@ -61,9 +61,10 @@ model Product {
   shop   User? @relation(fields: [shopId], references: [id])
   shopId Int?
 
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @default(now()) @updatedAt
-  productImages ProductImages[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @default(now()) @updatedAt
+  productImages   ProductImages[]
+  productVariants ProductVariant[]
 
   @@map("products")
 }
@@ -75,4 +76,23 @@ model ProductImages {
   productId Int
 
   @@map("product_images")
+}
+
+model ProductVariant {
+  id                  Int                  @id @default(autoincrement())
+  name                String
+  product             Product              @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId           Int
+  productVariantItems ProductVariantItem[]
+
+  @@map("product_variants")
+}
+
+model ProductVariantItem {
+  id               Int            @id @default(autoincrement())
+  name             String
+  productVariant   ProductVariant @relation(fields: [productVariantId], references: [id], onDelete: Cascade)
+  productVariantId Int
+
+  @@map("product_variant_items")
 }
