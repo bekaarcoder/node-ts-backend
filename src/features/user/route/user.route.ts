@@ -1,16 +1,22 @@
 import express from 'express';
-import { userController } from '../controller/user.controller';
+import { verifyUser } from '~/globals/middleware/auth.middleware';
 import { validateSchema } from '~/globals/middleware/validate.middleware';
-import { userSchemaCreate } from '../schema/user.schema';
-import { asyncWrapper } from '~/globals/middleware/error.middleware';
-import { isAdmin, verifyUser } from '~/globals/middleware/auth.middleware';
+import { userController } from '../controller/user.controller';
+import { userSchemaCreate, userSchemaUpdate } from '../schema/user.schema';
 
 const userRoute = express.Router();
 
 userRoute.post(
     '/',
     validateSchema(userSchemaCreate),
-    asyncWrapper(userController.createUser)
+    userController.createUser
+);
+
+userRoute.put(
+    '/:id',
+    verifyUser,
+    validateSchema(userSchemaUpdate),
+    userController.updateUser
 );
 
 userRoute.get('/me', verifyUser, userController.getMe);

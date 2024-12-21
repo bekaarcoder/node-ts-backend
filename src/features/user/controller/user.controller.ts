@@ -1,23 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
 import { HTTP_STATUS } from '~/globals/constants/http';
-import { prisma } from '~/prisma';
+import { userService } from '~/services/db/user.service';
 
 class UserController {
-    public async createUser(req: Request, res: Response, next: NextFunction) {
-        const { email, password, firstName, lastName, avatar } = req.body;
-
-        // Insert to DB
-        const newUser = await prisma.user.create({
-            data: {
-                email,
-                password,
-                firstName,
-                lastName,
-                avatar,
-            },
-        });
+    public async createUser(req: Request, res: Response) {
+        const newUser = await userService.add(req.body);
 
         res.status(HTTP_STATUS.CREATED).json(newUser);
+    }
+
+    public async updateUser(req: Request, res: Response) {
+        const id = parseInt(req.params.id);
+        const updatedUser = await userService.update(
+            id,
+            req.body,
+            req.currentUser
+        );
+
+        res.status(HTTP_STATUS.OK).json(updatedUser);
     }
 
     public async getMe(req: Request, res: Response, next: NextFunction) {

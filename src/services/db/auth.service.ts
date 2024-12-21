@@ -11,6 +11,10 @@ class AuthService {
     public async addUser(requestBody: IAuthRegister) {
         const { email, password, firstName, lastName, avatar } = requestBody;
 
+        if (await this.isEmailAlreadyExists(email)) {
+            throw new BadRequestException(`Email already exists`);
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Insert to DB
