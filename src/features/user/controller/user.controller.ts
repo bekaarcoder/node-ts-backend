@@ -37,6 +37,14 @@ class UserController {
         });
     }
 
+    public async uploadAvatar(req: Request, res: Response) {
+        await userService.addAvatar(req.file, req.currentUser);
+
+        res.status(HTTP_STATUS.OK).json({
+            message: 'Avatar uploaded successfully',
+        });
+    }
+
     public async getMe(req: Request, res: Response, next: NextFunction) {
         console.log(req.currentUser);
         res.status(200).json(req.currentUser);

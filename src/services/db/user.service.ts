@@ -35,6 +35,26 @@ class UserService {
         return this.returnUser(newUser);
     }
 
+    public async addAvatar(
+        file: Express.Multer.File | undefined,
+        currentUser: IUserPayload
+    ) {
+        const user = await this.getById(currentUser.id);
+
+        if (!file) {
+            throw new BadRequestException('No file selected');
+        }
+
+        await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                avatar: file.filename,
+            },
+        });
+    }
+
     public async update(
         id: number,
         requestBody: IUserUpdate,

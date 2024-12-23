@@ -10,11 +10,19 @@ import {
     userSchemaCreate,
     userSchemaUpdate,
 } from '../schema/user.schema';
+import { uploadAvatar } from '~/globals/helpers/Upload';
 
 const userRoute = express.Router();
 
 // global middleware
 // userRoute.use(verifyUser)
+
+userRoute.post(
+    '/upload-avatar',
+    verifyUser,
+    uploadAvatar.single('avatar'),
+    userController.uploadAvatar
+);
 
 userRoute.post(
     '/',
