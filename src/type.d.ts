@@ -11,4 +11,5 @@ interface IUserPayload {
     lastName: string;
     avatar: string;
     role: string;
+    isActive: boolean;
 }

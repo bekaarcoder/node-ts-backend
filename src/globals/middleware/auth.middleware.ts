@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { ForbiddenException, UnAuthorizedException } from './error.middleware';
 import jwt from 'jsonwebtoken';
 import { authService } from '~/services/db/auth.service';
+import { userService } from '~/services/db/user.service';
 
 export const verifyUser = (req: Request, res: Response, next: NextFunction) => {
     if (
@@ -64,4 +65,18 @@ export function authorizeRoles(...roles: string[]) {
 
         next();
     };
+}
+
+export async function preventInactiveUser(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    const user = await userService.getById(req.currentUser.id);
+
+    if (!user.isActive) {
+        throw new ForbiddenException('User is inactive');
+    }
+
+    next();
 }

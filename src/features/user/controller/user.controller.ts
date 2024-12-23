@@ -20,6 +20,15 @@ class UserController {
         res.status(HTTP_STATUS.OK).json(updatedUser);
     }
 
+    public async deleteUser(req: Request, res: Response) {
+        const id = parseInt(req.params.id);
+        await userService.remove(id, req.currentUser);
+
+        res.status(HTTP_STATUS.OK).json({
+            message: 'User deleted',
+        });
+    }
+
     public async getMe(req: Request, res: Response, next: NextFunction) {
         console.log(req.currentUser);
         res.status(200).json(req.currentUser);

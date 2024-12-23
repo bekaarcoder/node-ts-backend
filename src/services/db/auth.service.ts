@@ -5,11 +5,19 @@ import {
     IAuthLogin,
     IAuthRegister,
 } from '~/features/user/interface/auth.interface';
-import { BadRequestException } from '~/globals/middleware/error.middleware';
+import {
+    BadRequestException,
+    ForbiddenException,
+} from '~/globals/middleware/error.middleware';
 
 class AuthService {
     public async addUser(requestBody: IAuthRegister) {
         const { email, password, firstName, lastName, avatar } = requestBody;
+
+        const user = await this.getUserByEmail(email);
+        if (user && !user.isActive) {
+            throw new ForbiddenException('User is not active');
+        }
 
         if (await this.isEmailAlreadyExists(email)) {
             throw new BadRequestException(`Email already exists`);
@@ -36,6 +44,7 @@ class AuthService {
             lastName,
             avatar,
             role: newUser.role,
+            isActive: newUser.isActive,
         };
 
         const accessToken: string = this.generateJWT(payload);
@@ -48,6 +57,10 @@ class AuthService {
 
         if (!user) {
             throw new BadRequestException('Invalid Credentials');
+        }
+
+        if (!user.isActive) {
+            throw new ForbiddenException('User is not active');
         }
 
         const isPasswordMatched = await bcrypt.compare(
@@ -66,6 +79,7 @@ class AuthService {
             lastName: user.lastName,
             avatar: user.avatar,
             role: user.role,
+            isActive: user.isActive,
         };
 
         const accessToken: string = this.generateJWT(payload);

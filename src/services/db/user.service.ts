@@ -52,6 +52,22 @@ class UserService {
         return this.returnUser(updatedUser);
     }
 
+    public async remove(id: number, user: IUserPayload) {
+        const existingUser = await this.getById(id);
+        if (existingUser.id !== user.id) {
+            throw new ForbiddenException('Forbidden request');
+        }
+
+        await prisma.user.update({
+            where: {
+                id,
+            },
+            data: {
+                isActive: false,
+            },
+        });
+    }
+
     public async getById(id: number) {
         const user = await prisma.user.findFirst({
             where: {
