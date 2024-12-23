@@ -29,6 +29,14 @@ class UserController {
         });
     }
 
+    public async changePassword(req: Request, res: Response) {
+        await userService.updatePassword(req.body, req.currentUser);
+
+        res.status(HTTP_STATUS.OK).json({
+            message: 'Password changed successfully',
+        });
+    }
+
     public async getMe(req: Request, res: Response, next: NextFunction) {
         console.log(req.currentUser);
         res.status(200).json(req.currentUser);

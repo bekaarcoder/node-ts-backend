@@ -5,7 +5,11 @@ import {
 } from '~/globals/middleware/auth.middleware';
 import { validateSchema } from '~/globals/middleware/validate.middleware';
 import { userController } from '../controller/user.controller';
-import { userSchemaCreate, userSchemaUpdate } from '../schema/user.schema';
+import {
+    changePasswordSchema,
+    userSchemaCreate,
+    userSchemaUpdate,
+} from '../schema/user.schema';
 
 const userRoute = express.Router();
 
@@ -16,6 +20,14 @@ userRoute.post(
     '/',
     validateSchema(userSchemaCreate),
     userController.createUser
+);
+
+userRoute.put(
+    '/change-password',
+    verifyUser,
+    preventInactiveUser,
+    validateSchema(changePasswordSchema),
+    userController.changePassword
 );
 
 userRoute.put(

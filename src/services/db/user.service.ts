@@ -7,9 +7,14 @@ import {
     NotFoundException,
 } from '~/globals/middleware/error.middleware';
 import { User } from '@prisma/client';
+import {
+    IUserChangePassword,
+    IUserCreate,
+    IUserUpdate,
+} from '~/features/user/interface/user.interface';
 
 class UserService {
-    public async add(requestBody: any) {
+    public async add(requestBody: IUserCreate) {
         const { email, password, firstName, lastName, avatar } = requestBody;
 
         if (await authService.isEmailAlreadyExists(email)) {
@@ -30,7 +35,11 @@ class UserService {
         return this.returnUser(newUser);
     }
 
-    public async update(id: number, requestBody: any, user: IUserPayload) {
+    public async update(
+        id: number,
+        requestBody: IUserUpdate,
+        user: IUserPayload
+    ) {
         const { firstName, lastName, avatar } = requestBody;
 
         const existingUser = await this.getById(id);
@@ -64,6 +73,35 @@ class UserService {
             },
             data: {
                 isActive: false,
+            },
+        });
+    }
+
+    public async updatePassword(
+        requestBody: IUserChangePassword,
+        user: IUserPayload
+    ) {
+        const { currentPassword, newPassword } = requestBody;
+
+        const currentUser = await this.getById(user.id);
+
+        const isMatched = await bcrypt.compare(
+            currentPassword,
+            currentUser.password
+        );
+
+        if (!isMatched) {
+            throw new BadRequestException('Current Password is incorrect');
+        }
+
+        const newHashedPassword = await bcrypt.hash(newPassword, 10);
+
+        await prisma.user.update({
+            where: {
+                id: currentUser.id,
+            },
+            data: {
+                password: newHashedPassword,
             },
         });
     }
