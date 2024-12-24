@@ -131,6 +131,9 @@ class UserService {
             where: {
                 id,
             },
+            include: {
+                cart: true,
+            },
         });
 
         if (!user) {
