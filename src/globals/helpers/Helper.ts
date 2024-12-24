@@ -11,4 +11,15 @@ export class Helper {
 
         throw new ForbiddenException('Forbidden request');
     }
+
+    public static checkPermission<EntityType extends { [key: string]: any }>(
+        entity: EntityType,
+        entityProperty: string,
+        currentUser: IUserPayload
+    ) {
+        if (currentUser.role === 'ADMIN') return;
+        if (currentUser.id === entity[entityProperty]) return;
+
+        throw new ForbiddenException('Forbidden request');
+    }
 }

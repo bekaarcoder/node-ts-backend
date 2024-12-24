@@ -34,6 +34,7 @@ model User {
   updatedAt DateTime   @updatedAt
   products  Product[]
   wishlists Wishlist[]
+  addresses Address[]
 
   @@map("users")
 }
@@ -107,4 +108,18 @@ model Wishlist {
 
   @@id([userId, productId])
   @@map("wishlists")
+}
+
+model Address {
+  id      Int    @id @default(autoincrement())
+  street  String
+  city    String
+  state   String
+  country String
+  pincode Int
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@map("address")
 }
