@@ -1,14 +1,16 @@
+import { Cart, CartItem } from '@prisma/client';
+import { Helper } from '~/globals/helpers/Helper';
+import { NotFoundException } from '~/globals/middleware/error.middleware';
 import { prisma } from '~/prisma';
 import { productService } from './product.service';
-import {
-    BadRequestException,
-    NotFoundException,
-} from '~/globals/middleware/error.middleware';
 import { userService } from './user.service';
-import { Cart, CartItem } from '@prisma/client';
+import {
+    ICartBody,
+    IUpdateCartBody,
+} from '~/features/cart/interface/cart.interface';
 
 class CartService {
-    public async add(requestBody: any, currentUser: IUserPayload) {
+    public async add(requestBody: ICartBody, currentUser: IUserPayload) {
         const { productId, variant, quantity } = requestBody;
 
         const product = await productService.getById(productId);
@@ -43,7 +45,7 @@ class CartService {
                     productId,
                     variant,
                     cartId: cart.id,
-                    price: quantity ? product.price * quantity : product.price,
+                    price: product.price,
                     quantity,
                 },
             });
@@ -55,27 +57,81 @@ class CartService {
                 },
                 data: {
                     quantity: itemQuantity,
-                    price: product.price * itemQuantity,
                 },
             });
         }
 
-        const currentCartItems = await this.getCartItems(cart.id);
-        const totalPrice = currentCartItems.reduce(
-            (acc, item) => acc + item.price,
-            0
-        );
+        const updatedCart = await this.updateCart(cart.id);
+        return updatedCart;
+    }
 
-        const updatedCart = await prisma.cart.update({
+    public async clear(cartId: number, currentUser: IUserPayload) {
+        const cart = await this.getCart(cartId);
+        Helper.checkPermission(cart, 'userId', currentUser);
+
+        await prisma.cart.delete({
             where: {
-                id: cartItem.cartId,
+                id: cart.id,
             },
-            data: {
-                totalPrice: totalPrice,
+        });
+    }
+
+    public async removeItem(
+        cartId: number,
+        cartItemId: number,
+        requestBody: IUpdateCartBody,
+        currentUser: IUserPayload
+    ) {
+        const { quantity } = requestBody;
+        const cart = await this.getCart(cartId);
+        Helper.checkPermission(cart, 'userId', currentUser);
+
+        const cartItems = await this.getCartItems(cart.id);
+        const foundItem = cartItems.find((item) => item.id === cartItemId);
+        if (!foundItem) {
+            throw new NotFoundException('Item not found in the cart');
+        }
+
+        if (quantity && foundItem.quantity > quantity) {
+            await prisma.cartItem.update({
+                where: {
+                    id: foundItem.id,
+                },
+                data: {
+                    quantity: foundItem.quantity - quantity,
+                },
+            });
+        } else {
+            await prisma.cartItem.delete({
+                where: {
+                    id: foundItem.id,
+                },
+            });
+        }
+
+        const updatedCart = await this.updateCart(cart.id);
+        return updatedCart;
+    }
+
+    public async getUserCart(currentUser: IUserPayload) {
+        const userCart = await prisma.cart.findFirst({
+            where: {
+                userId: currentUser.id,
+            },
+            include: {
+                cartItems: {
+                    include: {
+                        product: true,
+                    },
+                },
             },
         });
 
-        return updatedCart;
+        if (!userCart) {
+            throw new NotFoundException('Your cart is empty');
+        }
+
+        return userCart;
     }
 
     private async getCart(id: number) {
@@ -99,6 +155,25 @@ class CartService {
             },
         });
         return cartItems;
+    }
+
+    private async updateCart(cartId: number) {
+        const currentCartItems = await this.getCartItems(cartId);
+        const totalPrice = currentCartItems.reduce(
+            (acc, item) => acc + item.price * item.quantity,
+            0
+        );
+
+        const updatedCart = await prisma.cart.update({
+            where: {
+                id: cartId,
+            },
+            data: {
+                totalPrice: totalPrice,
+            },
+        });
+
+        return updatedCart;
     }
 }
 
