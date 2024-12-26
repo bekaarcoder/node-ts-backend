@@ -2,6 +2,7 @@ import { Application } from 'express';
 import addressRoute from '~/features/address/route/address.route';
 import cartRoute from '~/features/cart/route/cart.route';
 import categoryRoute from '~/features/category/route/category.route';
+import couponRoute from '~/features/coupon/route/coupon.route';
 import orderRoute from '~/features/order/route/order.route';
 import productImagesRoute from '~/features/product-images/route/product-images.route';
 import productVariantItemsRoute from '~/features/product-variants/route/product-variant-items.route';
@@ -23,6 +24,7 @@ const appRoutes = (app: Application) => {
     app.use('/api/v1/address', addressRoute);
     app.use('/api/v1/cart', cartRoute);
     app.use('/api/v1/orders', orderRoute);
+    app.use('/api/v1/coupons', couponRoute);
 };
 
 export default appRoutes;

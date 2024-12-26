@@ -198,6 +198,7 @@ model Coupon {
   code          String       @id
   discountPrice Int
   discountType  DiscountType @default(PERCENT)
+  isActive      Boolean      @default(true)
   orders        Order[]
 
   @@map("coupons")
