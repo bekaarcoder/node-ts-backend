@@ -148,7 +148,7 @@ class CartService {
         return cart;
     }
 
-    private async getCartItems(cartId: number) {
+    public async getCartItems(cartId: number) {
         const cartItems = await prisma.cartItem.findMany({
             where: {
                 cartId,
@@ -159,6 +159,12 @@ class CartService {
 
     private async updateCart(cartId: number) {
         const currentCartItems = await this.getCartItems(cartId);
+
+        // Delete cart if cart is empty
+        if (currentCartItems.length < 1) {
+            await prisma.cart.delete({ where: { id: cartId } });
+            return null;
+        }
         const totalPrice = currentCartItems.reduce(
             (acc, item) => acc + item.price * item.quantity,
             0
