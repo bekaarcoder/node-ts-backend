@@ -167,6 +167,7 @@ model CartItem {
 model Order {
   id            Int         @id @default(autoincrement())
   totalPrice    Float
+  discountPrice Float       @default(0)
   totalQuantity Int         @default(1)
   status        OrderStatus
   orderItems    OrderItem[]

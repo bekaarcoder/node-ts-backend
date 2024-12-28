@@ -27,12 +27,7 @@ couponRoute.get(
     couponController.getAllCoupons
 );
 
-couponRoute.get(
-    '/:code',
-    verifyUser,
-    authorizeRoles('ADMIN'),
-    couponController.getCoupon
-);
+couponRoute.get('/:code', couponController.getCoupon);
 
 couponRoute.put(
     '/:code',
