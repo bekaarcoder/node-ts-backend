@@ -36,6 +36,9 @@ function getUploader(type: string) {
             }
             callback(null, true);
         },
+        limits: {
+            fileSize: 1 * 1024 * 1024, // 2MB
+        },
     });
     return upload;
 }

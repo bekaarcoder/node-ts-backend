@@ -19,3 +19,8 @@ export const changePasswordSchema = Joi.object({
     newPassword: Joi.string().min(8).required(),
     confirmPassword: Joi.ref('newPassword'),
 });
+
+export const resetPasswordSchema = Joi.object({
+    newPassword: Joi.string().min(8).required(),
+    confirmPassword: Joi.ref('newPassword'),
+});
