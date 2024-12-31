@@ -1,4 +1,5 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
+import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 import appRoutes from './globals/routes/appRoutes';
 import { HTTP_STATUS } from './globals/constants/http';
@@ -23,6 +24,7 @@ class Server {
     }
 
     private setupMiddleware(): void {
+        this.app.use(cookieParser());
         this.app.use(express.json());
         this.app.use('/images', express.static('images'));
     }

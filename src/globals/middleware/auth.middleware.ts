@@ -5,14 +5,11 @@ import { authService } from '~/services/db/auth.service';
 import { userService } from '~/services/db/user.service';
 
 export const verifyUser = (req: Request, res: Response, next: NextFunction) => {
-    if (
-        !req.headers['authorization'] ||
-        !req.headers['authorization'].startsWith('Bearer')
-    ) {
+    if (!req.cookies['accessToken']) {
         throw new UnAuthorizedException('Token is invalid, please login again');
     }
 
-    const token = req.headers['authorization'].split(' ')[1];
+    const token = req.cookies['accessToken'];
     try {
         const decoded = jwt.verify(
             token,

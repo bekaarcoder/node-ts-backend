@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { HTTP_STATUS } from '~/globals/constants/http';
+import { sendTokenToCookie } from '~/globals/helpers/Cookie';
 import { email } from '~/globals/helpers/Email';
 import { authService } from '~/services/db/auth.service';
 
@@ -8,6 +9,9 @@ class AuthController {
         const { accessToken, email: userEmail } = await authService.addUser(
             req.body
         );
+
+        sendTokenToCookie(res, accessToken);
+
         await email.send({
             from: 'verification@ecomm.com',
             to: userEmail,
@@ -21,7 +25,6 @@ class AuthController {
 
         res.status(HTTP_STATUS.CREATED).json({
             message: 'User registered successfully',
-            accessToken,
             userEmail,
         });
     }
@@ -29,9 +32,10 @@ class AuthController {
     public async loginUser(req: Request, res: Response) {
         const accessToken = await authService.login(req.body);
 
+        sendTokenToCookie(res, accessToken);
+
         res.status(HTTP_STATUS.OK).json({
             message: 'User logged in successfully',
-            accessToken,
         });
     }
 
