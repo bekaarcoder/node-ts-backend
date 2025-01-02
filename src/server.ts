@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
 // import 'dotenv/config';
 import dotenv from 'dotenv';
+import cors from 'cors';
 import appRoutes from './globals/routes/appRoutes';
 import { HTTP_STATUS } from './globals/constants/http';
 import {
@@ -34,6 +35,19 @@ class Server {
     }
 
     private setupMiddleware(): void {
+        const allowedOrigins = ['http://localhost:5173'];
+        this.app.use(
+            cors({
+                origin: function (origin, callback) {
+                    if (!origin || allowedOrigins.includes(origin)) {
+                        callback(null, true);
+                    } else {
+                        callback(new Error('Not allowed by CORS'));
+                    }
+                },
+                credentials: true,
+            })
+        );
         this.app.use(cookieParser());
         this.app.use(express.json());
         this.app.use('/images', express.static('images'));
