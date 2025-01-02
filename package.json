@@ -6,7 +6,8 @@
         "start": "node -r tsconfig-paths/register dist/index.js",
         "dev": "npx nodemon",
         "db:migrate": "npx prisma migrate dev",
-        "db:push": "npx prisma db push"
+        "db:push": "npx prisma db push",
+        "build": "npx tspc"
     },
     "keywords": [],
     "author": "",
