@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import cookieParser from 'cookie-parser';
-import 'dotenv/config';
+// import 'dotenv/config';
+import dotenv from 'dotenv';
 import appRoutes from './globals/routes/appRoutes';
 import { HTTP_STATUS } from './globals/constants/http';
 import {
@@ -17,10 +18,19 @@ class Server {
     }
 
     public start(): void {
+        this.setEnvVariables();
         this.setupMiddleware();
         this.setupRoutes();
         this.setupGlobalError();
         this.startServer();
+    }
+
+    private setEnvVariables() {
+        const envFile =
+            process.env.NODE_ENV === 'production' ? '.env.prod' : '.env.dev';
+        dotenv.config({ path: envFile });
+        console.log(envFile);
+        console.log(process.env.PORT);
     }
 
     private setupMiddleware(): void {
@@ -60,7 +70,7 @@ class Server {
     }
 
     private startServer() {
-        const port = parseInt(process.env.PORT!) || 5000;
+        const port = parseInt(process.env.PORT!) || 5050;
 
         this.app.listen(port, () => {
             console.log(`App is running on port ${port}`);

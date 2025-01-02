@@ -3,11 +3,11 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "start": "node -r tsconfig-paths/register dist/index.js",
-        "dev": "npx nodemon",
+        "start": "cross-env NODE_ENV=production node -r tsconfig-paths/register dist/index.js",
+        "dev": "cross-env NODE_ENV=development npx nodemon",
         "db:migrate": "npx prisma migrate dev",
         "db:push": "npx prisma db push",
-        "build": "npx tspc"
+        "build": "rimraf dist/* && npx tspc"
     },
     "keywords": [],
     "author": "",
@@ -32,12 +32,14 @@
         "@prisma/client": "^6.0.1",
         "bcrypt": "^5.1.1",
         "cookie-parser": "^1.4.7",
+        "cross-env": "^7.0.3",
         "dotenv": "^16.4.7",
         "express": "^4.21.2",
         "express-async-errors": "^3.1.1",
         "joi": "^17.13.3",
         "jsonwebtoken": "^9.0.2",
         "multer": "^1.4.5-lts.1",
-        "nodemailer": "^6.9.16"
+        "nodemailer": "^6.9.16",
+        "rimraf": "^6.0.1"
     }
 }
