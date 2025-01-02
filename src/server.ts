@@ -35,7 +35,10 @@ class Server {
     }
 
     private setupMiddleware(): void {
-        const allowedOrigins = ['http://localhost:5173'];
+        const allowedOrigins = [
+            'http://localhost:5173',
+            'https://wealthy-wallaby-explicitly.ngrok-free.app',
+        ];
         this.app.use(
             cors({
                 origin: function (origin, callback) {
