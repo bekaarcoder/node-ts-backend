@@ -5,5 +5,6 @@ export function sendTokenToCookie(res: Response, accessToken: string) {
         maxAge: 1 * 60 * 60 * 1000, // 1hr
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
+        domain: '192.168.1.27',
     });
 }

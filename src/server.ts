@@ -38,6 +38,7 @@ class Server {
         const allowedOrigins = [
             'http://localhost:5173',
             'https://wealthy-wallaby-explicitly.ngrok-free.app',
+            'http://192.168.1.27',
         ];
         this.app.use(
             cors({
