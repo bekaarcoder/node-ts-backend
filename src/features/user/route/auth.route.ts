@@ -15,6 +15,8 @@ authRoute.post(
 
 authRoute.post('/login', authController.loginUser);
 
+authRoute.post('/logout', authController.logoutUser);
+
 authRoute.post('/forgot-password', authController.forgotPassword);
 
 authRoute.post(

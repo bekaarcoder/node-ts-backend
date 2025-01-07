@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { HTTP_STATUS } from '~/globals/constants/http';
-import { sendTokenToCookie } from '~/globals/helpers/Cookie';
+import { expireCookie, sendTokenToCookie } from '~/globals/helpers/Cookie';
 import { email } from '~/globals/helpers/Email';
 import { authService } from '~/services/db/auth.service';
 
@@ -36,6 +36,14 @@ class AuthController {
 
         res.status(HTTP_STATUS.OK).json({
             message: 'User logged in successfully',
+        });
+    }
+
+    public async logoutUser(req: Request, res: Response) {
+        expireCookie(res);
+
+        res.status(HTTP_STATUS.OK).json({
+            message: 'User logged out successfully',
         });
     }
 
